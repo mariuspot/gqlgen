@@ -6,13 +6,13 @@ func (ec *executionContext) _{{$object.Name}}_{{$field.Name}}(ctx context.Contex
 		{{- $null = "nil" }}
 	{{- end }}
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func () {
+	defer func (ctx context.Context) {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
 			ret = {{ $null }}
 		}
 		ec.Tracer.EndFieldExecution(ctx)
-	}()
+	}(ctx)
 	rctx := &graphql.ResolverContext{
 		Object: {{$object.Name|quote}},
 		Field: field,
